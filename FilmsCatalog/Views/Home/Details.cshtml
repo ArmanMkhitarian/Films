@@ -1,0 +1,19 @@
+﻿@model FilmsCatalog.Models.Film
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div>
+    <img class="card-img-top" height="500" src="@Url.Action("GetImageView", "Home", new { Model.Id})" />
+</div>
+<div>
+    <h3>@Model.Name</h3>
+   
+    <b>Описание:</b> <p>@Model.Description</p>
+    <b>Режиссёр:</b> <p>@Model.Director</p>
+    <b>Год выпуска:</b> <p>@Model.ReleaseYear</p>
+</div>
+<div>
+    <a asp-action="Index">Вернуться к списку</a>
+</div>

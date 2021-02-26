@@ -1,0 +1,62 @@
+﻿@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@model IEnumerable<FilmsCatalog.Models.FilmViewModel>
+@{
+    ViewData["Title"] = "Главная";
+}
+
+<div>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <a asp-action="Create" class="btn btn-link">Добавить фильм</a>
+    }
+
+    <div class=container>
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <img class="card-img-top" height="225" src="@Url.Action("GetImageView", "Home", new { item.Id})" />                     
+                        <div class="card-body">
+                            <h4 class="card-title">@item.Name</h4>
+                            <p class="card-text">@item.ReleaseYear</p>
+                            <p class="card-text">@item.Director</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a asp-action="Details" asp-controller="Home" asp-route-id="@item.Id" class=" btn btn-info">Подробнее</a>
+                                    @if (User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier) != null)
+                                    {
+                                        @if (item.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value)
+                                        {
+                                            <a class="btn btn-link" asp-action="Edit" asp-controller="Home" asp-route-id="@item.Id">Изменить</a>
+                                        }
+                                    }
+                                </div>
+                                <small class="text-muted">@item.UserName</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page = page }),
+        new X.PagedList.Web.Common.PagedListRenderOptionsBase
+        {
+            DisplayItemSliceAndTotal = false,
+            ContainerDivClasses = new[] { "navigation" },
+            LiElementClasses = new[] { "page-item" },
+            PageClasses = new[] { "page-link" },
+        }
+    )
+</div>
+
+@section Scripts{ 
+    <script>
+        $(document).ready(function () {
+            $('ul.pagination > li.disabled > a').addClass('pag-link');
+        }
+    </script>
+}
