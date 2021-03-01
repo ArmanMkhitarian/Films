@@ -1,5 +1,6 @@
 ﻿using FilmsCatalog.Data;
 using FilmsCatalog.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -36,12 +37,14 @@ namespace FilmsCatalog.Controllers
             return View(await result.ToPagedListAsync(pageNumber, pageSize));
         }
 
+        [Authorize]
         public IActionResult Create()
         {
             return View();
         }
 
-        [HttpPost]
+        [HttpPost] 
+        [Authorize]
         public async Task<IActionResult> Create(FilmViewModel filmVM)
         {
             Film film = new Film { Name = filmVM.Name, Description = filmVM.Description, Director = filmVM.Director, ReleaseYear = filmVM.ReleaseYear};
@@ -54,6 +57,7 @@ namespace FilmsCatalog.Controllers
             return Redirect("Index");
         }
 
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if(id != null)
@@ -66,6 +70,7 @@ namespace FilmsCatalog.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Edit(FilmViewModel filmVM)
         {
             if(filmVM.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value)
